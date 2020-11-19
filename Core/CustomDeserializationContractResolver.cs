@@ -31,9 +31,9 @@ namespace MercadoPago
 
                 return property;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }
