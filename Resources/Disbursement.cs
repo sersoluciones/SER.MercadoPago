@@ -9,6 +9,11 @@ namespace MercadoPago.Resources
     /// </summary>
     public class Disbursement : MPBase
     {
+        public Disbursement(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         /// <summary>
         /// Identification
         /// </summary>
@@ -54,17 +59,16 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns><see langword="true"/> if updated with success, otherwise <see langword="false"/></returns>
         [POSTEndpoint("/v1/advanced_payments/:advanced_payment_id/disbursements/:disbursement_id/disburses")]
-        internal static bool UpdateReleaseDate(long advancedPaymentId, long disbursementId, DateTime releaseDate, MPRequestOptions requestOptions)
+        internal bool UpdateReleaseDate(long advancedPaymentId, long disbursementId, DateTime releaseDate, MPRequestOptions requestOptions)
         {
             var pathParams = new Dictionary<string, string>();
             pathParams.Add("advanced_payment_id", advancedPaymentId.ToString());
             pathParams.Add("disbursement_id", disbursementId.ToString());
 
-            var disbursement = new Disbursement
-            {
-                MoneyReleaseDate = releaseDate
-            };
-            return disbursement.ProcessMethodBool<Disbursement>("UpdateReleaseDate", WITHOUT_CACHE, pathParams, requestOptions);
+
+            MoneyReleaseDate = releaseDate;
+            
+            return this.ProcessMethodBool<Disbursement>("UpdateReleaseDate", WITHOUT_CACHE, pathParams, requestOptions);
         }
     }
 }

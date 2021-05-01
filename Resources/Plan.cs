@@ -6,15 +6,20 @@ namespace MercadoPago.Resources
 {
     public class Plan : MPBase
     {
+        public Plan(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
 
-        public static Plan Load(string id)
+        public Plan Load(string id)
         {
             return Load(id, WITHOUT_CACHE, null);
         }
 
         [GETEndpoint("/v1/plans/:id")]
-        public static Plan Load(string id, bool useCache, MPRequestOptions requestOptions)
+        public Plan Load(string id, bool useCache, MPRequestOptions requestOptions)
         {
             return (Plan)ProcessMethod<Plan>(typeof(Plan), "Load", id, useCache, requestOptions);
         }

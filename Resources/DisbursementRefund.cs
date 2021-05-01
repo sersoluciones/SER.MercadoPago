@@ -9,6 +9,11 @@ namespace MercadoPago.Resources
     /// </summary>
     public class DisbursementRefund : MPBase
     {
+        public DisbursementRefund(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         /// <summary>
         /// Refund ID
         /// </summary>
@@ -42,7 +47,7 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>Created disbursement refund</returns>
         [POSTEndpoint("/v1/advanced_payments/:advanced_payment_id/refunds")]
-        internal static List<DisbursementRefund> CreateAll(long advancedPaymentId, MPRequestOptions requestOptions)
+        internal List<DisbursementRefund> CreateAll(long advancedPaymentId, MPRequestOptions requestOptions)
         {
             var pathParams = new Dictionary<string, string>();
             pathParams.Add("advanced_payment_id", advancedPaymentId.ToString());
@@ -59,18 +64,14 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>Created disbursement refund</returns>
         [POSTEndpoint("/v1/advanced_payments/:advanced_payment_id/disbursements/:disbursement_id/refunds")]
-        internal static DisbursementRefund Create(long advancedPaymentId, long disbursementId, decimal? amount, MPRequestOptions requestOptions)
+        internal DisbursementRefund Create(long advancedPaymentId, long disbursementId, decimal? amount, MPRequestOptions requestOptions)
         {
             var pathParams = new Dictionary<string, string>();
             pathParams.Add("advanced_payment_id", advancedPaymentId.ToString());
             pathParams.Add("disbursement_id", disbursementId.ToString());
+            Amount = amount;
 
-            var disbursementRefund = new DisbursementRefund
-            {
-                Amount = amount
-            };
-
-            return ProcessMethod(typeof(DisbursementRefund), disbursementRefund, "Create", pathParams, WITHOUT_CACHE, requestOptions);
+            return ProcessMethod(typeof(DisbursementRefund), this, "Create", pathParams, WITHOUT_CACHE, requestOptions);
         }
     }
 }

@@ -7,13 +7,17 @@ namespace MercadoPago.Resources
 {
     public class PaymentMethod : MPBase
     {
+        public PaymentMethod(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
 
         #region Actions
 
         /// <summary>
         /// Get All Payment Methods available
         /// </summary>
-        public static List<PaymentMethod> All()
+        public List<PaymentMethod> All()
         {
             return All(WITHOUT_CACHE, null);
         }
@@ -22,7 +26,7 @@ namespace MercadoPago.Resources
         /// Get All Payment Methods available
         /// </summary>
         [GETEndpoint("/v1/payment_methods")]
-        public static List<PaymentMethod> All(bool useCache, MPRequestOptions requestOptions)
+        public List<PaymentMethod> All(bool useCache, MPRequestOptions requestOptions)
         {
             return (List<PaymentMethod>)ProcessMethodBulk<PaymentMethod>(typeof(PaymentMethod), "All", useCache, requestOptions);
         }

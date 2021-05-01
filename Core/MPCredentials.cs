@@ -12,22 +12,22 @@ namespace MercadoPago
         /// Gets access token for current ClientId and ClientSecret
         /// </summary>
         /// <returns>Access token.</returns>
-        public static string GetAccessToken()
+        public static string GetAccessToken(SDK sDK)
         {
-            if (string.IsNullOrEmpty(SDK.ClientId) || string.IsNullOrEmpty(SDK.ClientSecret))
+            if (string.IsNullOrEmpty(sDK.ClientId) || string.IsNullOrEmpty(sDK.ClientSecret))
             {
                 throw new MPException("\"client_id\" and \"client_secret\" can not be \"null\" when getting the \"access_token\"");
             }
 
             JObject jsonPayload = new JObject();
             jsonPayload.Add("grant_type", "client_credentials");
-            jsonPayload.Add("client_id", SDK.ClientId);
-            jsonPayload.Add("client_secret", SDK.ClientSecret);
+            jsonPayload.Add("client_id", sDK.ClientId);
+            jsonPayload.Add("client_secret", sDK.ClientSecret);
 
             string access_token, refresh_token = null;
-            MPAPIResponse response = new MPRESTClient().ExecuteRequest(
+            MPAPIResponse response = new MPRESTClient(sDK).ExecuteRequest(
                     HttpMethod.POST,
-                    SDK.BaseUrl + "/oauth/token",
+                    sDK.BaseUrl + "/oauth/token",
                     PayloadType.X_WWW_FORM_URLENCODED,
                     jsonPayload,
                     null, 
@@ -48,8 +48,8 @@ namespace MercadoPago
                 
                 // Making refresh token an optional param
                 if (refreshTokenElem != null && refreshTokenElem.Count == 1){
-                    refresh_token = refreshTokenElem.First().ToString(); 
-                    SDK.RefreshToken = refresh_token;
+                    refresh_token = refreshTokenElem.First().ToString();
+                    sDK.RefreshToken = refresh_token;
                 }
             }
             else
@@ -65,22 +65,22 @@ namespace MercadoPago
         ///  Refreshes access token for current refresh token
         /// </summary>
         /// <returns>Refreshed access token</returns>
-        public static string RefreshAccessToken()
+        public static string RefreshAccessToken(SDK sDK)
         {
-            if (string.IsNullOrEmpty(SDK.RefreshToken))
+            if (string.IsNullOrEmpty(sDK.RefreshToken))
             {
                 throw new MPException("\"RefreshToken\" can not be \"null\". Refresh access token could not be completed.");
             }
 
             JObject jsonPayload = new JObject();
-            jsonPayload.Add("client_secret", SDK.ClientSecret);
+            jsonPayload.Add("client_secret", sDK.ClientSecret);
             jsonPayload.Add("grant_type", "refresh_token");
-            jsonPayload.Add("refresh_token", SDK.RefreshToken);
+            jsonPayload.Add("refresh_token", sDK.RefreshToken);
 
             string new_access_token = null;
-            MPAPIResponse response = new MPRESTClient().ExecuteRequest(
+            MPAPIResponse response = new MPRESTClient(sDK).ExecuteRequest(
                     HttpMethod.POST,
-                    SDK.BaseUrl + "/oauth/token",
+                    sDK.BaseUrl + "/oauth/token",
                     PayloadType.X_WWW_FORM_URLENCODED,
                     jsonPayload,
                     null,

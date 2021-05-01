@@ -4,31 +4,38 @@ namespace MercadoPago.Resources
 {
     public class DiscountCampaign : MPBase
     {
+        public DiscountCampaign(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
 
-        public static DiscountCampaign Find(float transactionAmount, string payerEmail)
+        public DiscountCampaign Find(float transactionAmount, string payerEmail)
         {
             return Find(transactionAmount, payerEmail, null, WITHOUT_CACHE, null);
         }
 
-        public static DiscountCampaign Find(float transactionAmount, string payerEmail, bool useCache, MPRequestOptions requestOptions)
+        public DiscountCampaign Find(float transactionAmount, string payerEmail, bool useCache, MPRequestOptions requestOptions)
         {
             return Find(transactionAmount, payerEmail, null, useCache, requestOptions);
         }
 
-        public static DiscountCampaign Find(float transactionAmount, string payerEmail, string couponCode)
+        public DiscountCampaign Find(float transactionAmount, string payerEmail, string couponCode)
         {
             return Find(transactionAmount, payerEmail, couponCode, WITHOUT_CACHE, null);
         }
 
         [GETEndpoint("/v1/discount_campaigns")]
-        public static DiscountCampaign Find(float transactionAmount, string payerEmail, string couponCode, bool useCache, MPRequestOptions requestOptions)
+        public DiscountCampaign Find(float transactionAmount, string payerEmail, string couponCode, bool useCache, MPRequestOptions requestOptions)
         {
-            var queryParams = new Dictionary<string, string>();
-            queryParams.Add("transaction_amount", transactionAmount.ToString());
-            queryParams.Add("payer_email", payerEmail);
-            queryParams.Add("coupon_code", couponCode);
-            
+            var queryParams = new Dictionary<string, string>
+            {
+                { "transaction_amount", transactionAmount.ToString() },
+                { "payer_email", payerEmail },
+                { "coupon_code", couponCode }
+            };
+
             return ProcessMethod<DiscountCampaign>(typeof(DiscountCampaign), null, "Find", queryParams, useCache, requestOptions);
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -61,8 +62,8 @@ namespace MercadoPago.Insight
             {
                 var clientInfo = new ClientInfo
                 {
-                    Name = SDK.ClientName,
-                    Version = SDK.Version,
+                    Name = SDK.CLIENT_NAME,
+                    Version = new AssemblyName(typeof(SDK).Assembly.FullName).Version.ToString(3),
                 };
 
                 var productId = GetHeaderValue(request, HEADER_X_PRODUCT_ID);
@@ -179,8 +180,8 @@ namespace MercadoPago.Insight
             {
                 var clientInfo = new ClientInfo
                 {
-                    Name = SDK.ClientName,
-                    Version = SDK.Version,
+                    Name = SDK.CLIENT_NAME,
+                    Version = new AssemblyName(typeof(SDK).Assembly.FullName).Version.ToString(3) // SDK.Version,
                 };
 
                 var trafficLightRequest = new TrafficLightRequest
@@ -224,13 +225,13 @@ namespace MercadoPago.Insight
             var url = INSIGHT_DEFAULT_BASE_URL + path;
 
             var httpRequest = (HttpWebRequest)HttpWebRequest.Create(url);
-            httpRequest.Headers.Add(HEADER_X_INSIGHTS_METRIC_LAB_SCOPE, SDK.MetricsScope);
+            httpRequest.Headers.Add(HEADER_X_INSIGHTS_METRIC_LAB_SCOPE, SDK.DEFAULT_METRICS_SCOPE);
             httpRequest.Method = "POST";
             httpRequest.Accept = "application/json";
             httpRequest.ContentType = "application/json";
-            httpRequest.Proxy = SDK.Proxy;
+            //httpRequest.Proxy = SDK.Proxy;
             httpRequest.ContentLength = payload.Length;
-            httpRequest.Timeout = SDK.RequestsTimeout;
+            httpRequest.Timeout = SDK.DEFAULT_REQUESTS_TIMEOUT;
 
             using (var requestStream = httpRequest.GetRequestStream())
             {

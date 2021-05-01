@@ -8,6 +8,11 @@ namespace MercadoPago.Resources
     /// </summary>
     public class OAuth : MPBase
     {
+        public OAuth(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         /// <summary>
         /// Client secret (access token)
         /// </summary>
@@ -74,9 +79,9 @@ namespace MercadoPago.Resources
         /// <param name="appId">Application ID</param>
         /// <param name="redirectUri">Redirect URL configured</param>
         /// <returns>URL to obtain the authorization code</returns>
-        public static string GetAuthorizationURL(string appId, string redirectUri)
+        public string GetAuthorizationURL(string appId, string redirectUri)
         {
-            User user = User.Find();
+            User user = new User(_mercadoPagoSDK).Find();
             if (user == null || String.IsNullOrEmpty(user.CountryId))
             {
                 return null;
@@ -98,17 +103,16 @@ namespace MercadoPago.Resources
         /// <param name="authorizationCode">Authorization code</param>
         /// <param name="redirectUri">Redirect Uri</param>
         /// <returns>OAuth token</returns>
-        public static OAuth GetOAuthCredentials(string authorizationCode, string redirectUri)
+        public OAuth GetOAuthCredentials(string authorizationCode, string redirectUri)
         {
-            var oAuth = new OAuth
-            {
-                ClientSecret = SDK.AccessToken,
-                GrantType = "authorization_code",
-                Code = authorizationCode,
-                RedirectUri = redirectUri
-            };
-            oAuth.Save();
-            return oAuth;
+
+            ClientSecret = _mercadoPagoSDK.AccessToken;
+            GrantType = "authorization_code";
+            Code = authorizationCode;
+            RedirectUri = redirectUri;
+            
+            this.Save();
+            return this;
         }
 
         /// <summary>
@@ -116,16 +120,15 @@ namespace MercadoPago.Resources
         /// </summary>
         /// <param name="refreshToken">Refresh token</param>
         /// <returns>Refreshed OAuth token</returns>
-        public static OAuth RefreshOAuthCredentials(string refreshToken)
+        public OAuth RefreshOAuthCredentials(string refreshToken)
         {
-            var oAuth = new OAuth
-            {
-                ClientSecret = SDK.AccessToken,
-                GrantType = "refresh_token",
-                RefreshToken = refreshToken
-            };
-            oAuth.Save();
-            return oAuth;
+
+            ClientSecret = _mercadoPagoSDK.AccessToken;
+            GrantType = "refresh_token";
+            RefreshToken = refreshToken;
+            
+            this.Save();
+            return this;
         }
 
         /// <summary>

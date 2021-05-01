@@ -11,31 +11,31 @@ namespace MercadoPago
 {
     public class SDK
     {
-        private const int DEFAULT_REQUESTS_TIMEOUT = 30000;
-        private const int DEFAULT_REQUESTS_RETRIES = 3;
-        private const string DEFAULT_BASE_URL = "https://api.mercadopago.com";
-        private const string PRODUCT_ID = "BC32BHVTRPP001U8NHL0";
-        private const string CLIENT_NAME = "MercadoPago-SDK-DotNet";
-        private const string DEFAULT_METRICS_SCOPE = "prod";
+        public const int DEFAULT_REQUESTS_TIMEOUT = 30000;
+        public const int DEFAULT_REQUESTS_RETRIES = 3;
+        public const string DEFAULT_BASE_URL = "https://api.mercadopago.com";
+        public const string PRODUCT_ID = "BC32BHVTRPP001U8NHL0";
+        public const string CLIENT_NAME = "MercadoPago-SDK-DotNet";
+        public const string DEFAULT_METRICS_SCOPE = "prod";
 
-        private static string _clientSecret;
-        private static string _clientId;
-        private static string _accessToken;
-        private static string _appId;
-        private static string _baseUrl = DEFAULT_BASE_URL;
-        private static int _requestsTimeout = DEFAULT_REQUESTS_TIMEOUT;
-        private static int _requestsRetries = DEFAULT_REQUESTS_RETRIES;
-        private static IWebProxy _proxy;
-        private static string _userToken;
-        private static string _refreshToken;
-        private static readonly string _version;
-        private static string _corporationId;
-        private static string _integratorId;
-        private static string _platformId;
-        private static string _trackingId;
-        private static string _metricsScope = DEFAULT_METRICS_SCOPE;
+        private string _clientSecret;
+        private string _clientId;
+        private string _accessToken;
+        private string _appId;
+        private string _baseUrl = DEFAULT_BASE_URL;
+        private int _requestsTimeout = DEFAULT_REQUESTS_TIMEOUT;
+        private int _requestsRetries = DEFAULT_REQUESTS_RETRIES;
+        private IWebProxy _proxy;
+        private string _userToken;
+        private string _refreshToken;
+        private readonly string _version;
+        private string _corporationId;
+        private string _integratorId;
+        private string _platformId;
+        private string _trackingId;
+        private string _metricsScope = DEFAULT_METRICS_SCOPE;
 
-        static SDK()
+        public SDK()
         {
             _version = new AssemblyName(typeof(SDK).Assembly.FullName).Version.ToString(3);
             _trackingId = String.Format("platform:{0}|{1},type:SDK{2},so;", Environment.Version.Major, Environment.Version, _version);
@@ -44,7 +44,7 @@ namespace MercadoPago
         /// <summary>  
         /// Property that represent the client secret token.
         /// </summary>
-        public static string ClientSecret
+        public string ClientSecret
         {
             get { return _clientSecret; }
             set
@@ -60,7 +60,7 @@ namespace MercadoPago
         /// <summary>
         /// Property that represents a client id.
         /// </summary>
-        public static string ClientId
+        public string ClientId
         {
             get { return _clientId; }
             set
@@ -76,15 +76,15 @@ namespace MercadoPago
         /// <summary>
         /// MercadoPago AccessToken.
         /// </summary>
-        public static string AccessToken
+        public string AccessToken
         {
             get { return _accessToken; }
             set
             {
-                if (!string.IsNullOrEmpty(_accessToken))
-                {
-                    throw new MPConfException("accessToken setting can not be changed");
-                }
+                //if (!string.IsNullOrEmpty(_accessToken))
+                //{
+                //    throw new MPConfException("accessToken setting can not be changed");
+                //}
                 _accessToken = value;
             }
         }
@@ -92,7 +92,7 @@ namespace MercadoPago
         /// <summary>
         /// MercadoPAgo app id.
         /// </summary>
-        public static string AppId
+        public string AppId
         {
             get { return _appId; }
             set
@@ -108,7 +108,7 @@ namespace MercadoPago
         /// <summary>
         /// Api base URL. Currently https://api.mercadopago.com
         /// </summary>
-        public static string BaseUrl
+        public string BaseUrl
         {
             get { return _baseUrl; }
         }
@@ -116,7 +116,8 @@ namespace MercadoPago
         /// <summary>
         /// Api requests timeout
         /// </summary>
-        public static int RequestsTimeout {
+        public int RequestsTimeout
+        {
             get { return _requestsTimeout; }
             set { _requestsTimeout = value; }
         }
@@ -124,32 +125,33 @@ namespace MercadoPago
         /// <summary>
         /// Api requests retries
         /// </summary>
-        public static int RequestsRetries {
+        public int RequestsRetries
+        {
             get
             { return _requestsRetries; }
             set { _requestsRetries = value; }
         }
 
-        public static IWebProxy Proxy
+        public IWebProxy Proxy
         {
             get { return _proxy; }
             set { _proxy = value; }
         }
 
-        public static string RefreshToken
+        public string RefreshToken
         {
             get { return _refreshToken; }
             set { _refreshToken = value; }
         }
 
         /// <summary>Gets the version of the SDK.</summary>
-        public static string Version
+        public string Version
         {
             get { return _version; }
         }
 
         /// <summary>Gets the product ID.</summary>
-        public static string ProductId
+        public string ProductId
         {
             get { return PRODUCT_ID; }
         }
@@ -157,13 +159,13 @@ namespace MercadoPago
         /// <summary>
         /// Gets the client name.
         /// </summary>
-        public static string ClientName
+        public string ClientName
         {
             get { return CLIENT_NAME; }
         }
 
         /// <summary>Gets the tracking ID.</summary>
-        public static string TrackingId
+        public string TrackingId
         {
             get { return _trackingId; }
         }
@@ -171,7 +173,7 @@ namespace MercadoPago
         /// <summary>
         /// Insight metrics scope
         /// </summary>
-        public static string MetricsScope
+        public string MetricsScope
         {
             get { return _metricsScope; }
             set { _metricsScope = value; }
@@ -182,7 +184,7 @@ namespace MercadoPago
         /// clientSecret, clientId, accessToken, appId
         /// </summary>
         /// <param name="configurationParams"></param>
-        public static void SetConfiguration(IDictionary<String, String> configurationParams)
+        public void SetConfiguration(IDictionary<String, String> configurationParams)
         {
             if (configurationParams == null) throw new ArgumentException("Invalid configurationParams parameter");
 
@@ -206,12 +208,12 @@ namespace MercadoPago
             String proxyHostName;
             String proxyPortStr;
             int proxyPort;
-            if (configurationParams.TryGetValue("proxyHostName", out proxyHostName) 
+            if (configurationParams.TryGetValue("proxyHostName", out proxyHostName)
                 && configurationParams.TryGetValue("proxyPort", out proxyPortStr)
                 && Int32.TryParse(proxyPortStr, out proxyPort))
             {
                 _proxy = new WebProxy(proxyHostName, proxyPort);
-                
+
                 String proxyUsername;
                 String proxyPassword;
                 if (configurationParams.TryGetValue("proxyUsername", out proxyUsername)
@@ -226,9 +228,9 @@ namespace MercadoPago
         /// Initializes the configurations based in a confiiguration object.
         /// </summary>
         /// <param name="config"></param>
-        public static void SetConfiguration(IConfiguration config)
+        public void SetConfiguration(IConfiguration config)
         {
-			if (config == null) throw new ArgumentException("config parameter cannot be null");
+            if (config == null) throw new ArgumentException("config parameter cannot be null");
 
             _clientSecret = GetConfigValue(config, "ClientSecret");
             _clientId = GetConfigValue(config, "ClientId");
@@ -260,7 +262,7 @@ namespace MercadoPago
         /// Clean all the configuration variables
         /// (FOR TESTING PURPOSES ONLY)
         /// </summary>
-        public static void CleanConfiguration()
+        public void CleanConfiguration()
         {
             _clientSecret = null;
             _clientId = null;
@@ -276,12 +278,12 @@ namespace MercadoPago
         /// Changes base Url
         /// (FOR TESTING PURPOSES ONLY)
         /// </summary>
-        public static void SetBaseUrl(string baseUrl)
+        public void SetBaseUrl(string baseUrl)
         {
             _baseUrl = baseUrl;
         }
 
-        private static string GetConfigValue(IConfiguration config, string key)
+        private string GetConfigValue(IConfiguration config, string key)
         {
             string value = null;
             var keyValue = config[key];
@@ -296,11 +298,11 @@ namespace MercadoPago
         /// Get the access token pointing to OAuth.
         /// </summary>
         /// <returns>A valid access token.</returns>
-        public static string GetAccessToken() 
+        public string GetAccessToken()
         {
             if (String.IsNullOrEmpty(AccessToken))
             {
-                AccessToken = MPCredentials.GetAccessToken();
+                AccessToken = MPCredentials.GetAccessToken(this);
             }
             return AccessToken;
         }
@@ -309,12 +311,12 @@ namespace MercadoPago
         /// Sets the access token.
         /// </summary>
         /// <param name="accessToken">Value of the access token.</param>
-        public static void SetAccessToken(string accessToken)
+        public void SetAccessToken(string accessToken)
         {
-            if (!string.IsNullOrEmpty(AccessToken))
-            {
-                throw new MPException("Access_Token setting cannot be changed.");   
-            }
+            //if (!string.IsNullOrEmpty(AccessToken))
+            //{
+            //    throw new MPException("Access_Token setting cannot be changed.");
+            //}
 
             AccessToken = accessToken;
         }
@@ -326,38 +328,38 @@ namespace MercadoPago
         /// <returns>User token to return.</returns>
         // TODO; remove this method in a future major version
         [Obsolete("There is no use for this method.")]
-        public static string GetUserToken()
+        public string GetUserToken()
         {
             return _userToken;
         }
 
-        public static void SetUserToken(string value)
+        public void SetUserToken(string value)
         {
             _userToken = value;
         }
 
-        public static JToken Get(String uri)
+        public JToken Get(String uri)
         {
-            MPRESTClient client = new MPRESTClient();
+            MPRESTClient client = new MPRESTClient(this);
             return client.ExecuteGenericRequest(HttpMethod.GET, uri, PayloadType.JSON, null);
         }
 
-        public static JToken Post(string uri, JObject payload)
+        public JToken Post(string uri, JObject payload)
         {
-            MPRESTClient client = new MPRESTClient();
+            MPRESTClient client = new MPRESTClient(this);
             return client.ExecuteGenericRequest(HttpMethod.POST, uri, PayloadType.JSON, payload);
         }
 
-        public static JToken Put(string uri, JObject payload)
+        public JToken Put(string uri, JObject payload)
         {
-            MPRESTClient client = new MPRESTClient();
+            MPRESTClient client = new MPRESTClient(this);
             return client.ExecuteGenericRequest(HttpMethod.PUT, uri, PayloadType.JSON, payload);
         }
 
         /// <summary>  
         ///  Property that represent the corporation id.
         /// </summary>
-        public static string CorporationId
+        public string CorporationId
         {
             get { return _corporationId; }
             set
@@ -373,12 +375,12 @@ namespace MercadoPago
         /// <summary>  
         ///  Property that represent the integrator id.
         /// </summary>
-        public static string IntegratorId
+        public string IntegratorId
         {
-            get { return _integratorId;  }
+            get { return _integratorId; }
             set
             {
-                if(!string.IsNullOrEmpty(_integratorId))
+                if (!string.IsNullOrEmpty(_integratorId))
                 {
                     throw new MPConfException("integratorId setting can not be changed");
                 }
@@ -389,7 +391,7 @@ namespace MercadoPago
         /// <summary>  
         ///  Property that represent the plataform id.
         /// </summary>
-        public static string PlatformId
+        public string PlatformId
         {
             get { return _platformId; }
             set
@@ -402,32 +404,32 @@ namespace MercadoPago
             }
         }
 
-        public static void SetCorporationId(string corporationId)
+        public void SetCorporationId(string corporationId)
         {
             CorporationId = corporationId;
         }
 
-        public static string GetCorporationId()
+        public string GetCorporationId()
         {
             return CorporationId;
         }
 
-        public static void SetIntegratorId(string integratorId)
+        public void SetIntegratorId(string integratorId)
         {
             IntegratorId = integratorId;
         }
 
-        public static string GetIntegratorId()
+        public string GetIntegratorId()
         {
             return IntegratorId;
         }
 
-        public static void SetPlatformId(string platformId)
+        public void SetPlatformId(string platformId)
         {
             PlatformId = platformId;
         }
 
-        public static string GetPlatformId()
+        public string GetPlatformId()
         {
             return PlatformId;
         }

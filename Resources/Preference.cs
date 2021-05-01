@@ -17,11 +17,16 @@ namespace MercadoPago.Resources
     /// </summary>
     public class Preference : MPBase
     {
+        public Preference(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
         /// <summary>
         /// Find a preference trought an unique identifier
         /// </summary>
-        public static Preference FindById(string id)
+        public Preference FindById(string id)
         {
             return FindById(id, WITHOUT_CACHE, null);
         }
@@ -30,7 +35,7 @@ namespace MercadoPago.Resources
         /// Find a preference trought an unique identifier with Local Cache Flag
         /// </summary>
         [GETEndpoint("/checkout/preferences/:id")]
-        public static Preference FindById(string id, bool useCache, MPRequestOptions requestOptions)
+        public Preference FindById(string id, bool useCache, MPRequestOptions requestOptions)
         {            
             return (Preference)ProcessMethod<Preference>(typeof(Preference), "FindById", id, useCache, requestOptions);
         }

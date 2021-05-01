@@ -21,16 +21,16 @@ namespace MercadoPago
 
         public IDictionary<String, String> TrackHeaders { get; private set; }
 
-        public MPRequestOptions()
+        public MPRequestOptions(SDK sDK)
         {
-            Timeout = SDK.RequestsTimeout;
-            Retries = SDK.RequestsRetries;
-            Proxy = SDK.Proxy;
+            Timeout = sDK.RequestsTimeout;
+            Retries = sDK.RequestsRetries;
+            Proxy = sDK.Proxy;
             CustomHeaders = new Dictionary<String, String>();
             TrackHeaders = new Dictionary<String, String> {
-                { "x-platform-id", SDK.GetPlatformId() },
-                { "x-corporation-id", SDK.GetCorporationId() },
-                { "x-integrator-id", SDK.GetIntegratorId() }
+                { "x-platform-id", sDK.GetPlatformId() },
+                { "x-corporation-id", sDK.GetCorporationId() },
+                { "x-integrator-id", sDK.GetIntegratorId() }
             };
         }
     }

@@ -4,6 +4,11 @@ namespace MercadoPago.Resources
 {
     public class CardToken : MPBase
     {
+        public CardToken(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
 
         public CardToken Save()
@@ -17,13 +22,13 @@ namespace MercadoPago.Resources
             return (CardToken)ProcessMethod<CardToken>("Save", WITHOUT_CACHE, requestOptions);
         }
 
-        public static CardToken FindById(string id)
+        public CardToken FindById(string id)
         {
             return FindById(id, WITHOUT_CACHE, null);
         }
 
         [GETEndpoint("/v1/card_tokens/:id")]
-        public static CardToken FindById(string id, bool useCache, MPRequestOptions requestOptions)
+        public CardToken FindById(string id, bool useCache, MPRequestOptions requestOptions)
         {            
             return (CardToken)ProcessMethod<CardToken>(typeof(CardToken), "FindById", id, useCache, requestOptions);
         }

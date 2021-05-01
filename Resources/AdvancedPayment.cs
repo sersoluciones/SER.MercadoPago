@@ -12,6 +12,11 @@ namespace MercadoPago.Resources
     /// </summary>
     public class AdvancedPayment : MPBase
     {
+        public AdvancedPayment(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         /// <summary>
         /// Identification
         /// </summary>
@@ -105,7 +110,7 @@ namespace MercadoPago.Resources
         [POSTEndpoint("/v1/advanced_payments")]
         public bool Save(MPRequestOptions requestOptions)
         {
-            return ProcessMethodBool<AdvancedPayment>("Save", WITHOUT_CACHE, requestOptions);
+            return ProcessMethodBool<AdvancedPayment>( "Save", WITHOUT_CACHE, requestOptions);
         }
 
         /// <summary>
@@ -113,7 +118,7 @@ namespace MercadoPago.Resources
         /// </summary>
         /// <param name="id">Advanced payment ID</param>
         /// <returns><see langword="true"/> if cancelled with success, otherwise <see langword="false"/></returns>
-        public static bool Cancel(long id)
+        public bool Cancel(long id)
         {
             return Cancel(id, null);
         }
@@ -125,12 +130,12 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns><see langword="true"/> if cancelled with success, otherwise <see langword="false"/></returns>
         [PUTEndpoint("/v1/advanced_payments/:id")]
-        public static bool Cancel(long id, MPRequestOptions requestOptions)
+        public bool Cancel(long id, MPRequestOptions requestOptions)
         {
             var pathParams = new Dictionary<string, string>();
             pathParams.Add("id", id.ToString());
 
-            var advancedPayment = new AdvancedPayment
+            var advancedPayment = new AdvancedPayment(_mercadoPagoSDK)
             {
                 Status = "cancelled"
             };
@@ -143,7 +148,7 @@ namespace MercadoPago.Resources
         /// <param name="id">Advanced payment ID</param>
         /// <returns><see langword="true"/> if captured with success, otherwise <see langword="false"/></returns>
         [PUTEndpoint("/v1/advanced_payments/:id")]
-        public static bool DoCapture(long id)
+        public bool DoCapture(long id)
         {
             return DoCapture(id, null);
         }
@@ -155,12 +160,12 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns><see langword="true"/> if captured with success, otherwise <see langword="false"/></returns>
         [PUTEndpoint("/v1/advanced_payments/:id")]
-        public static bool DoCapture(long id, MPRequestOptions requestOptions)
+        public bool DoCapture(long id, MPRequestOptions requestOptions)
         {
             var pathParams = new Dictionary<string, string>();
             pathParams.Add("id", id.ToString());
 
-            var advancedPayment = new AdvancedPayment
+            var advancedPayment = new AdvancedPayment(_mercadoPagoSDK)
             {
                 Capture = true
             };
@@ -173,7 +178,7 @@ namespace MercadoPago.Resources
         /// <param name="advancedPaymentId">Advanced payment ID</param>
         /// <param name="releaseDate">Release date</param>
         /// <returns><see langword="true"/> if updated with success, otherwise <see langword="false"/></returns>
-        public static bool UpdateReleaseDate(long advancedPaymentId, DateTime releaseDate)
+        public bool UpdateReleaseDate(long advancedPaymentId, DateTime releaseDate)
         {
             return UpdateReleaseDate(advancedPaymentId, releaseDate, null);
         }
@@ -186,12 +191,12 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns><see langword="true"/> if updated with success, otherwise <see langword="false"/></returns>
         [POSTEndpoint("/v1/advanced_payments/:advanced_payment_id/disburses")]
-        public static bool UpdateReleaseDate(long advancedPaymentId, DateTime releaseDate, MPRequestOptions requestOptions)
+        public bool UpdateReleaseDate(long advancedPaymentId, DateTime releaseDate, MPRequestOptions requestOptions)
         {
             var pathParams = new Dictionary<string, string>();
             pathParams.Add("advanced_payment_id", advancedPaymentId.ToString());
 
-            var advancedPayment = new AdvancedPayment
+            var advancedPayment = new AdvancedPayment(_mercadoPagoSDK)
             {
                 MoneyReleaseDate = releaseDate
             };
@@ -205,7 +210,7 @@ namespace MercadoPago.Resources
         /// <param name="disbursementId">Disbursement ID</param>
         /// <param name="releaseDate">Release date</param>
         /// <returns><see langword="true"/> if updated with success, otherwise <see langword="false"/></returns>
-        public static bool UpdateReleaseDate(long advancedPaymentId, long disbursementId, DateTime releaseDate)
+        public bool UpdateReleaseDate(long advancedPaymentId, long disbursementId, DateTime releaseDate)
         {
             return UpdateReleaseDate(advancedPaymentId, disbursementId, releaseDate, null);
         }
@@ -218,9 +223,9 @@ namespace MercadoPago.Resources
         /// <param name="releaseDate">Release date</param>
         /// <param name="requestOptions">Request options</param>
         /// <returns><see langword="true"/> if updated with success, otherwise <see langword="false"/></returns>
-        public static bool UpdateReleaseDate(long advancedPaymentId, long disbursementId, DateTime releaseDate, MPRequestOptions requestOptions)
+        public bool UpdateReleaseDate(long advancedPaymentId, long disbursementId, DateTime releaseDate, MPRequestOptions requestOptions)
         {
-            return Disbursement.UpdateReleaseDate(advancedPaymentId, disbursementId, releaseDate, requestOptions);
+            return new Disbursement(_mercadoPagoSDK).UpdateReleaseDate(advancedPaymentId, disbursementId, releaseDate, requestOptions);
         }
 
         /// <summary>
@@ -228,7 +233,7 @@ namespace MercadoPago.Resources
         /// </summary>
         /// <param name="advancedPaymentId">Advanced payment ID</param>
         /// <returns>A list with all disbursement refunds</returns>
-        public static List<DisbursementRefund> RefundAll(long advancedPaymentId)
+        public List<DisbursementRefund> RefundAll(long advancedPaymentId)
         {
             return RefundAll(advancedPaymentId, null);
         }
@@ -240,9 +245,9 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>A list with all disbursement refunds</returns>
         [POSTEndpoint("/v1/advanced_payments/:advanced_payment_id/refunds")]
-        public static List<DisbursementRefund> RefundAll(long advancedPaymentId, MPRequestOptions requestOptions)
+        public List<DisbursementRefund> RefundAll(long advancedPaymentId, MPRequestOptions requestOptions)
         {
-            return DisbursementRefund.CreateAll(advancedPaymentId, requestOptions);
+            return new DisbursementRefund(_mercadoPagoSDK).CreateAll(advancedPaymentId, requestOptions);
         }
 
         /// <summary>
@@ -251,7 +256,7 @@ namespace MercadoPago.Resources
         /// <param name="advancedPaymentId">Advanced payment ID</param>
         /// <param name="disbursementId">Disbursement ID</param>
         /// <returns>Disbursement refund data</returns>
-        public static DisbursementRefund Refund(long advancedPaymentId, long disbursementId)
+        public DisbursementRefund Refund(long advancedPaymentId, long disbursementId)
         {
             return Refund(advancedPaymentId, disbursementId, null, null);
         }
@@ -263,7 +268,7 @@ namespace MercadoPago.Resources
         /// <param name="disbursementId">Disbursement ID</param>
         /// <param name="requestOptions">Request options</param>
         /// <returns>Disbursement refund data</returns>
-        public static DisbursementRefund Refund(long advancedPaymentId, long disbursementId, MPRequestOptions requestOptions)
+        public DisbursementRefund Refund(long advancedPaymentId, long disbursementId, MPRequestOptions requestOptions)
         {
             return Refund(advancedPaymentId, disbursementId, null, requestOptions);
         }
@@ -275,7 +280,7 @@ namespace MercadoPago.Resources
         /// <param name="disbursementId">Disbursement ID</param>
         /// <param name="amount">Amount to refund</param>
         /// <returns>Disbursement refund data</returns>
-        public static DisbursementRefund Refund(long advancedPaymentId, long disbursementId, decimal? amount)
+        public DisbursementRefund Refund(long advancedPaymentId, long disbursementId, decimal? amount)
         {
             return Refund(advancedPaymentId, disbursementId, amount, null);
         }
@@ -289,9 +294,9 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>Disbursement refund data</returns>
         [POSTEndpoint("/v1/advanced_payments/:advanced_payment_id/disbursements/:payment_id/refunds")]
-        public static DisbursementRefund Refund(long advancedPaymentId, long disbursementId, decimal? amount, MPRequestOptions requestOptions)
+        public DisbursementRefund Refund(long advancedPaymentId, long disbursementId, decimal? amount, MPRequestOptions requestOptions)
         {
-            return DisbursementRefund.Create(advancedPaymentId, disbursementId, amount, requestOptions);
+            return new DisbursementRefund(_mercadoPagoSDK).Create(advancedPaymentId, disbursementId, amount, requestOptions);
         }
 
         /// <summary>
@@ -300,7 +305,7 @@ namespace MercadoPago.Resources
         /// <param name="id">Advanced payment ID</param>
         /// <returns>Advanced payment with ID equals to <paramref name="id"/></returns>
         [GETEndpoint("/v1/advanced_payments/:id")]
-        public static AdvancedPayment FindById(long? id)
+        public AdvancedPayment FindById(long? id)
         {
             return FindById(id, WITHOUT_CACHE, null);
         }
@@ -312,7 +317,7 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>Advanced payment with ID equals to <paramref name="id"/></returns>
         [GETEndpoint("/v1/advanced_payments/:id")]
-        public static AdvancedPayment FindById(long? id, MPRequestOptions requestOptions)
+        public AdvancedPayment FindById(long? id, MPRequestOptions requestOptions)
         {
             return FindById(id, WITHOUT_CACHE, requestOptions);
         }
@@ -325,7 +330,7 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>Advanced payment with ID equals to <paramref name="id"/></returns>
         [GETEndpoint("/v1/advanced_payments/:id")]
-        public static AdvancedPayment FindById(long? id, bool useCache, MPRequestOptions requestOptions)
+        public AdvancedPayment FindById(long? id, bool useCache, MPRequestOptions requestOptions)
         {
             return (AdvancedPayment)ProcessMethod<AdvancedPayment>(typeof(AdvancedPayment), "FindById", id.ToString(), useCache, requestOptions);
         }
@@ -334,7 +339,7 @@ namespace MercadoPago.Resources
         /// Get all advanced payments
         /// </summary>
         /// <returns>List of advanced payments</returns>
-        public static List<AdvancedPayment> All()
+        public List<AdvancedPayment> All(SDK sDK)
         {
             return All(WITHOUT_CACHE, null);
         }
@@ -344,7 +349,7 @@ namespace MercadoPago.Resources
         /// </summary>
         /// <param name="requestOptions">Request options</param>
         /// <returns>List of advanced payments</returns>
-        public static List<AdvancedPayment> All(MPRequestOptions requestOptions)
+        public List<AdvancedPayment> All(MPRequestOptions requestOptions)
         {
             return All(WITHOUT_CACHE, requestOptions);
         }
@@ -356,7 +361,7 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>List of advanced payments</returns>
         [GETEndpoint("/v1/advanced_payments/search")]
-        public static List<AdvancedPayment> All(bool useCache, MPRequestOptions requestOptions)
+        public List<AdvancedPayment> All(bool useCache, MPRequestOptions requestOptions)
         {
             return ProcessMethodBulk<AdvancedPayment>(typeof(AdvancedPayment), "Search", useCache, requestOptions);
         }
@@ -366,7 +371,7 @@ namespace MercadoPago.Resources
         /// </summary>
         /// <param name="filters">Search filters</param>
         /// <returns>List of advanced payments</returns>
-        public static List<AdvancedPayment> Search(Dictionary<string, string> filters)
+        public List<AdvancedPayment> Search(Dictionary<string, string> filters)
         {
             return Search(filters, WITHOUT_CACHE, null);
         }
@@ -377,7 +382,7 @@ namespace MercadoPago.Resources
         /// <param name="filters">Search filters</param>
         /// <param name="requestOptions">Request options</param>
         /// <returns>List of advanced payments</returns>
-        public static List<AdvancedPayment> Search(Dictionary<string, string> filters, MPRequestOptions requestOptions)
+        public List<AdvancedPayment> Search(Dictionary<string, string> filters, MPRequestOptions requestOptions)
         {
             return Search(filters, WITHOUT_CACHE, requestOptions);
         }
@@ -390,7 +395,7 @@ namespace MercadoPago.Resources
         /// <param name="requestOptions">Request options</param>
         /// <returns>List of advanced payments</returns>
         [GETEndpoint("/v1/advanced_payments/search")]
-        public static List<AdvancedPayment> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
+        public List<AdvancedPayment> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
         {
             return ProcessMethodBulk<AdvancedPayment>(typeof(AdvancedPayment), "Search", filters, useCache, requestOptions);
         }

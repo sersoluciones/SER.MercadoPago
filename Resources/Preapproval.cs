@@ -8,11 +8,16 @@ namespace MercadoPago.Resources
 {
     public class Preapproval : MPBase
     {
+        public Preapproval(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
         /// <summary>
         /// Find a preapproval trought an unique identifier
         /// </summary>
-        public static Preapproval FindById(string id)
+        public Preapproval FindById(string id)
         {
             return FindById(id, WITHOUT_CACHE, null);
         }
@@ -21,7 +26,7 @@ namespace MercadoPago.Resources
         /// Find a preapproval trought an unique identifier with Local Cache Flag
         /// </summary>
         [GETEndpoint("/preapproval/:id")]
-        public static Preapproval FindById(string id, bool useCache, MPRequestOptions requestOptions)
+        public Preapproval FindById(string id, bool useCache, MPRequestOptions requestOptions)
         {
             return (Preapproval)ProcessMethod<Preapproval>(typeof(Preapproval), "FindById", id, useCache, requestOptions);
         }
@@ -63,7 +68,7 @@ namespace MercadoPago.Resources
         /// <summary>
         /// Get all preapprovals acoording to specific filters
         /// </summary>
-        public static List<Preapproval> Search(Dictionary<string, string> filters)
+        public List<Preapproval> Search(Dictionary<string, string> filters)
         {
             return Search(filters, WITHOUT_CACHE, null);
         }
@@ -72,7 +77,7 @@ namespace MercadoPago.Resources
         /// Get all preapprovals acoording to specific filters
         /// </summary>
         [GETEndpoint("/preapproval/search")]
-        public static List<Preapproval> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
+        public List<Preapproval> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
         {
             return (List<Preapproval>)ProcessMethodBulk<Preapproval>(typeof(Preapproval), "Search", filters, useCache, requestOptions);
         }

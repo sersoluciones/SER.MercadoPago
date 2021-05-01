@@ -16,6 +16,7 @@ namespace MercadoPago
     {
         private IWebProxy _proxy;
         private string _proxyHostName;
+        private SDK _sDK;
         private int _proxyPort = -1;
 
         public string ProxyHostName
@@ -34,8 +35,9 @@ namespace MercadoPago
         /// <summary>
         /// Class constructor.
         /// </summary>
-        public MPRESTClient()
+        public MPRESTClient(SDK SDK)
         {
+            _sDK = SDK;
             ServicePointManager.SecurityProtocol |= 
                 (SecurityProtocolType)768 | (SecurityProtocolType)3072;
         }
@@ -45,8 +47,8 @@ namespace MercadoPago
         /// </summary>
         /// <param name="proxyHostName">Proxy host to use.</param>
         /// <param name="proxyPort">Proxy port to use in the proxy host.</param>
-        public MPRESTClient(string proxyHostName, int proxyPort)
-            : this()
+        public MPRESTClient(SDK SDK, string proxyHostName, int proxyPort)
+            : this(SDK)
         {
             _proxy = new WebProxy(proxyHostName, proxyPort);
             _proxyHostName = proxyHostName;
@@ -59,9 +61,9 @@ namespace MercadoPago
             PayloadType payloadType,
             JObject payload)
         {
-            if (SDK.GetAccessToken() != null)
+            if (_sDK.GetAccessToken() != null)
             {
-                path = SDK.BaseUrl + path + "?access_token=" + SDK.GetAccessToken();
+                path = _sDK.BaseUrl + path + "?access_token=" + _sDK.GetAccessToken();
             }
 
             MPRequest mpRequest = CreateRequest(httpMethod, path, payloadType, payload, null, 0, 0);
@@ -165,7 +167,7 @@ namespace MercadoPago
             DateTime start = DateTime.Now;
 
             if (requestOptions == null) {
-                requestOptions = new MPRequestOptions();
+                requestOptions = new MPRequestOptions(_sDK);
             }
 
             MPRequest mpRequest = CreateRequest(httpMethod, path, payloadType, payload, requestOptions);
@@ -260,7 +262,7 @@ namespace MercadoPago
 
             if (requestOptions == null)
             {
-                requestOptions = new MPRequestOptions();
+                requestOptions = new MPRequestOptions(_sDK);
             }
 
             if (requestOptions.Timeout > 0)
@@ -268,8 +270,8 @@ namespace MercadoPago
                 mpRequest.Request.Timeout = requestOptions.Timeout;
             }
 
-            mpRequest.Request.Headers.Add("x-product-id", SDK.ProductId);
-            mpRequest.Request.Headers.Add("x-tracking-id", SDK.TrackingId);
+            mpRequest.Request.Headers.Add("x-product-id", _sDK.ProductId);
+            mpRequest.Request.Headers.Add("x-tracking-id", _sDK.TrackingId);
 
             if (requestOptions.CustomHeaders != null)
             {
@@ -292,9 +294,10 @@ namespace MercadoPago
                     }
                 }
             }
-
+            //Console.WriteLine(path);
             if (payload != null) // POST & PUT
             {
+                //Console.WriteLine(payload);
                 byte[] data = null;
                 if (payloadType != PayloadType.JSON)
                 {
@@ -314,13 +317,13 @@ namespace MercadoPago
                     data = Encoding.ASCII.GetBytes(payload.ToString());
                 }
 
-                mpRequest.Request.UserAgent = "MercadoPago DotNet SDK/" + SDK.Version;
+                mpRequest.Request.UserAgent = "MercadoPago DotNet SDK/" + _sDK.Version;
                 mpRequest.Request.ContentLength = data.Length;
                 mpRequest.Request.ContentType = payloadType == PayloadType.JSON ? "application/json" : "application/x-www-form-urlencoded";
                 mpRequest.RequestPayload = data;
             }
 
-            IWebProxy proxy = requestOptions.Proxy != null ? requestOptions.Proxy : (_proxy != null ? _proxy : SDK.Proxy);
+            IWebProxy proxy = requestOptions.Proxy != null ? requestOptions.Proxy : (_proxy != null ? _proxy : _sDK.Proxy);
             mpRequest.Request.Proxy = proxy;
 
             return mpRequest;
@@ -337,7 +340,7 @@ namespace MercadoPago
                 }
             }
 
-            return new MPRequestOptions
+            return new MPRequestOptions(_sDK)
             {
                 Timeout = connectionTimeout,
                 Retries = retries,

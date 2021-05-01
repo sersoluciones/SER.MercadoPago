@@ -3,6 +3,11 @@ namespace MercadoPago.Resources
 {
     public class Refund : MPBase
     {
+        public Refund(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
         /// <summary>
         /// Save a refund

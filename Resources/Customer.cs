@@ -10,11 +10,16 @@ namespace MercadoPago
 {    
     public class Customer : MPBase
     {
+        public Customer(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
         /// <summary>
         /// Get all customers acoording to specific filters
         /// </summary>
-        public static List<Customer> Search(Dictionary<string, string> filters)
+        public List<Customer> Search(Dictionary<string, string> filters)
         {
             return Search(filters, WITHOUT_CACHE, null);
         }
@@ -23,7 +28,7 @@ namespace MercadoPago
         /// Get all customers acoording to specific filters
         /// </summary>
         [GETEndpoint("/v1/customers/search")]
-        public static List<Customer> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
+        public List<Customer> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
         {
             return (List<Customer>)ProcessMethodBulk<Customer>(typeof(Customer), "Search", filters, useCache, requestOptions);
         } 
@@ -36,7 +41,7 @@ namespace MercadoPago
         /// <param name="requestOptions">Request options.</param>
         /// <returns>Searched customer.</returns>
         [GETEndpoint("/v1/customers/:id")]
-        public static Customer FindById(string id, bool useCache, MPRequestOptions requestOptions)
+        public Customer FindById(string id, bool useCache, MPRequestOptions requestOptions)
         {
             return (Customer)ProcessMethod<Customer>("FindById", id, useCache, requestOptions);
         }
@@ -44,7 +49,7 @@ namespace MercadoPago
         /// <summary>
         /// Find a customer by ID.
         /// </summary>
-        public static Customer FindById(string id)
+        public Customer FindById(string id)
         {
             return FindById(id, WITHOUT_CACHE, null);
         }

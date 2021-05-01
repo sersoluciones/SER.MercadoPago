@@ -18,6 +18,10 @@ namespace MercadoPago.Resources
     /// </summary>
     public class Payment : MPBase
     {
+        public Payment(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
         #region Actions
 
         public Payment Load(string id)
@@ -28,7 +32,7 @@ namespace MercadoPago.Resources
         /// <summary>
         /// Find a payment trought an unique identifier
         /// </summary>
-        public static Payment FindById(long? id)
+        public Payment FindById(long? id)
         {
             return FindById(id, WITHOUT_CACHE, null);
         }
@@ -37,7 +41,7 @@ namespace MercadoPago.Resources
         /// Find a payment trought an unique identifier with Local Cache Flag
         /// </summary>
         [GETEndpoint("/v1/payments/:id")]
-        public static Payment FindById(long? id, bool useCache, MPRequestOptions requestOptions)
+        public Payment FindById(long? id, bool useCache, MPRequestOptions requestOptions)
         {
             return (Payment)ProcessMethod<Payment>(typeof(Payment), "FindById", id.ToString(), useCache, requestOptions);
         }
@@ -73,7 +77,7 @@ namespace MercadoPago.Resources
         /// <summary>
         /// Get all payments
         /// </summary>
-        public static List<Payment> All()
+        public List<Payment> All(SDK sDK)
         {
             return All(WITHOUT_CACHE, null);
         }
@@ -81,7 +85,7 @@ namespace MercadoPago.Resources
         /// <summary>
         /// Get all payments acoording to specific filters
         /// </summary>
-        public static List<Payment> Search(Dictionary<string, string> filters)
+        public List<Payment> Search(Dictionary<string, string> filters)
         {
             return Search(filters, WITHOUT_CACHE, null);
         }
@@ -90,7 +94,7 @@ namespace MercadoPago.Resources
         /// Get all payments, with using cache option
         /// </summary>
         [GETEndpoint("/v1/payments/search")]
-        public static List<Payment> All(bool useCache, MPRequestOptions requestOptions)
+        public List<Payment> All(bool useCache, MPRequestOptions requestOptions)
         {
             return (List<Payment>)ProcessMethodBulk<Payment>(typeof(Payment), "Search", useCache, requestOptions);
         }
@@ -99,7 +103,7 @@ namespace MercadoPago.Resources
         /// Get all payments acoording to specific filters, with using cache option
         /// </summary>
         [GETEndpoint("/v1/payments/search")]
-        public static List<Payment> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
+        public List<Payment> Search(Dictionary<string, string> filters, bool useCache, MPRequestOptions requestOptions)
         {
             return (List<Payment>)ProcessMethodBulk<Payment>(typeof(Payment), "Search", filters, useCache, requestOptions);
         }
@@ -135,7 +139,7 @@ namespace MercadoPago.Resources
         /// </summary> 
         public Payment Refund(decimal? amount, MPRequestOptions requestOptions)
         {
-            Refund refund = new Refund();
+            Refund refund = new Refund(_mercadoPagoSDK);
             refund.manualSetPaymentId((decimal)Id);
             refund.Amount = amount;
             refund.Save(requestOptions);
@@ -143,7 +147,7 @@ namespace MercadoPago.Resources
             if (refund.Id.HasValue)
             {
                 Thread.Sleep(100);
-                var payment = Payment.FindById(Id, WITHOUT_CACHE, requestOptions);
+                var payment = FindById(Id, WITHOUT_CACHE, requestOptions);
                 Status = payment.Status;
                 StatusDetail = payment.StatusDetail;
                 TransactionAmountRefunded = payment.TransactionAmountRefunded;
@@ -369,7 +373,7 @@ namespace MercadoPago.Resources
         /// Try to send as much information as possible.
         /// </summary>
         public AdditionalInfo? AdditionalInfo { get; set; }
-        
+
         /// <summary>
         /// Processing mode to define if an specific merchannt id should be used.
         /// </summary>

@@ -8,25 +8,30 @@ namespace MercadoPago.Resources
 {
     public class Card : MPBase
     {
+        public Card(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions 
-        public static List<Card> All(String customerId)
+        public  List<Card> All(String customerId)
         {
             return All(customerId, WITHOUT_CACHE, null);
         }
         
         [GETEndpoint("/v1/customers/:customer_id/cards")]
-        public static List<Card> All(String customerId, bool useCache, MPRequestOptions requestOptions)
+        public  List<Card> All(String customerId, bool useCache, MPRequestOptions requestOptions)
         {
             return (List<Card>)ProcessMethodBulk<Card>(typeof(Card), "All", customerId, useCache, requestOptions);
         }
 
-        public static Card FindById(string customerId, string id)
+        public  Card FindById(string customerId, string id)
         {
             return FindById(customerId, id, WITHOUT_CACHE, null);
         }
 
         [GETEndpoint("/v1/customers/:customer_id/cards/:id")]
-        public static Card FindById(string customerId, string id, bool useCache, MPRequestOptions requestOptions)
+        public  Card FindById(string customerId, string id, bool useCache, MPRequestOptions requestOptions)
         {            
             return (Card)ProcessMethod<Card>(typeof(Card), "FindById", customerId, id, useCache, requestOptions);
         }

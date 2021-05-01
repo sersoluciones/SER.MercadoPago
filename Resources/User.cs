@@ -5,6 +5,11 @@
     /// </summary>
     public class User : MPBase
     {
+        public User(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         /// <summary>
         /// User ID
         /// </summary>
@@ -39,7 +44,7 @@
         /// Returns configured user information
         /// </summary>
         /// <returns>User information</returns>
-        public static User Find()
+        public User Find()
         {
             return Find(false, null);
         }
@@ -49,7 +54,7 @@
         /// </summary>
         /// <param name="useCache">Use local cache or not</param>
         /// <returns>User information</returns>
-        public static User Find(bool useCache)
+        public User Find(bool useCache)
         {
             return Find(useCache, null);
         }
@@ -59,7 +64,7 @@
         /// </summary>
         /// <param name="requestOptions">Request options</param>
         /// <returns>User information</returns>
-        public static User Find(MPRequestOptions requestOptions)
+        public User Find(MPRequestOptions requestOptions)
         {
             return Find(false, requestOptions);
         }
@@ -71,7 +76,7 @@
         /// <param name="requestOptions">Request options</param>
         /// <returns>User information</returns>
         [GETEndpoint("/users/me")]
-        public static User Find(bool useCache, MPRequestOptions requestOptions)
+        public User Find(bool useCache, MPRequestOptions requestOptions)
         {
             return (User)ProcessMethod<User>("Find", null, useCache, requestOptions);
         }

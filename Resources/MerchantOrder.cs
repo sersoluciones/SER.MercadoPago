@@ -9,8 +9,13 @@ namespace MercadoPago.Resources
 {
     public class MerchantOrder : MPBase
     {
+        public MerchantOrder(SDK sDK)
+        {
+            _mercadoPagoSDK = sDK;
+        }
+
         #region Actions
-        
+
         public MerchantOrder Load(string id) 
         {
             return Load(id, WITHOUT_CACHE, null);
