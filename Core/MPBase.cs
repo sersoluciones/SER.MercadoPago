@@ -339,7 +339,7 @@ namespace MercadoPago
             {
                 try
                 {
-                    resource = (T)Activator.CreateInstance(clazz);
+                    resource = (T)Activator.CreateInstance(clazz, new object[] { _mercadoPagoSDK });
                 }
                 catch (Exception ex)
                 {
